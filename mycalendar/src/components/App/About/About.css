@@ -1,0 +1,20 @@
+.about {
+  text-align: center;
+  padding: 3rem 1rem;
+  width: 100%;
+  margin: 0 auto;
+  background-color: rgb(236, 206, 209);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.about h2 {
+  font-size: 2rem;
+  color: #e91e63;
+  margin-bottom: 1rem;
+}
+
+.about p {
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.6;
+}
