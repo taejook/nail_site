@@ -7,7 +7,6 @@ import Services from "./components/App/Services/Services";
 import Gallery from "./components/App/Gallery/Gallery";
 import Footer from "./components/App/Footer/Footer";
 import Calendar from "./components/App/Calendar/Calendar";
-import BookingSection from "./components/App/Calendar/BookingSection/BookingSection";
 import "./App.css";
 
 export default function App() {
