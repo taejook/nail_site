@@ -26,10 +26,10 @@ export default function Calendar() {
     async function loadData() {
       try {
         const [locRes, teamRes, serviceRes, bookingRes] = await Promise.all([
-          fetch("http://localhost:4000/api/locations").then((r) => r.json()),
-          fetch("http://localhost:4000/api/team-members").then((r) => r.json()),
-          fetch("http://localhost:4000/api/services").then((r) => r.json()),
-          fetch("http://localhost:4000/api/bookings").then((r) => r.json()),
+          fetch("http://localhost:3001/api/locations").then((r) => r.json()),
+          fetch("http://localhost:3001/api/team-members").then((r) => r.json()),
+          fetch("http://localhost:3001/api/services").then((r) => r.json()),
+          fetch("http://localhost:3001/api/bookings").then((r) => r.json()),
         ]);
 
         setLocations(Array.isArray(locRes) ? locRes : []);
