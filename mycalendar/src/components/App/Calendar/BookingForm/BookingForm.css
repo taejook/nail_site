@@ -66,6 +66,15 @@
   transition: background 0.3s ease;
 }
 
+.primary-btn:disabled {
+  background: #838282;
+  cursor: not-allowed;
+}
+.primary-btn:disabled:hover {
+  background: #838282;
+  cursor: not-allowed;
+}
+
 .primary-btn:hover {
   background: #c2185b;
 }

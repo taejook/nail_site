@@ -1,16 +1,23 @@
 .nav {
+  z-index: 1000;
   display: flex;
+  font-size: 16px;
   justify-content: center;
   align-items: center;
   padding: 1rem 2rem;
   width: 100%;
   background-color: white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
+
   top: 0;
 }
+.nav a {
+  text-decoration: none;
+  color: inherit;
+}
 
-.nav-bar{
+.nav-bar {
   display: flex;
   width: 70%;
   max-width: 1200px;
@@ -21,20 +28,63 @@
   font-size: 2rem;
   font-weight: bold;
   color: #e91e63;
+  list-style: none;
+  text-decoration: none;
 }
 
-.nav-links {
+
+.btn-wrapper {
+  display:flex;
+  background: #ecced1;
+  border: 2px solid #e91e63;  
+  color: #e91e63;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+
+.nav-btn:hover,
+.nav-btn:focus {
+  background-color: #f8bbd0;   
+  color: white;                
+  outline: none;                
+}
+
+
+.nav-btn:focus-visible {
+  outline: 2px solid #e91e63;
+  outline-offset: 2px;
+}
+
+
+.nav-links,
+.nav-btn {
+  color: #333;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 16px;
   list-style: none;
   display: flex;
   gap: 3rem;
+  border: none;
+  background: none;
 }
 
-.nav-links a {
+.nav-links a,
+.nav-btn a {
   text-decoration: none;
   color: #333;
   transition: color 0.2s;
 }
 
-.nav-links a:hover {
+.nav-links a:hover,
+.nav-btn a:hover {
   color: #e91e63;
+}
+
+.nav-btn{
+  color: #e91e63;
+  cursor: pointer;
 }

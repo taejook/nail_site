@@ -2,8 +2,13 @@ import React from "react";
 import "./BookingForm.css";
 
 export default function BookingForm({
-  customerId = "",
-  setCustomerId = () => {},
+  user,
+  fullNameId = "",
+  setFullNameId = () => {},
+  emailId = "",
+  setEmailId = () => {},
+  phoneNumberId = "",
+  setPhoneNumberId = () => {},
   selectedLocation = "",
   setSelectedLocation = () => {},
   selectedTeamMember = "",
@@ -20,17 +25,43 @@ export default function BookingForm({
   const safeServices = Array.isArray(services) ? services : [];
   const safeTeamMembers = Array.isArray(teamMembers) ? teamMembers : [];
 
+  const autofullName = user?.fullName ?? fullNameId;
+  const autoEmail = user?.email ?? emailId;
+  const readOnly = Boolean(user); // lock when logged in
+  const autoPhone = user?.phoneNumber ?? phoneNumberId;
+
   return (
     <div className="booking-form">
       <h3>Create Booking</h3>
 
-      {/* Customer ID */}
       <div className="form-group">
-        <label>Customer ID:</label>
+        <label>Full Name:</label>
         <input
           type="text"
-          value={customerId}
-          onChange={(e) => setCustomerId(e.target.value)}
+          value={autofullName}
+          onChange={(e) => setFullNameId(e.target.value)}
+          readOnly={readOnly}
+        />
+      </div>
+
+      <div className="form-group">
+        <label>Email:</label>
+        <input
+          type="text"
+          value={autoEmail}
+          onChange={(e) => setEmailId(e.target.value)}
+          readOnly={readOnly}
+        />
+      </div>
+
+      <div className="form-group">
+        <label>Phone Number:</label>
+        <input
+          type="text"
+          value={autoPhone}
+          onChange={(e) => setPhoneNumberId(e.target.value)}
+          readOnly={readOnly && !!user?.phoneNumber}
+          placeholder={readOnly && !user?.phoneNumber ? "Enter phone number" : ""}
         />
       </div>
 
@@ -84,9 +115,21 @@ export default function BookingForm({
 
       {/* Actions */}
       <div className="form-actions">
-        <button className="primary-btn" onClick={onSubmit}>
+        <button
+          className="primary-btn"
+          onClick={onSubmit}
+          disabled={
+            !fullNameId ||
+            !emailId ||
+            !phoneNumberId ||
+            !selectedLocation ||
+            !selectedTeamMember ||
+            !selectedService
+          }
+        >
           Create Booking
         </button>
+
         <button className="secondary-btn" onClick={onCancel}>
           Cancel
         </button>

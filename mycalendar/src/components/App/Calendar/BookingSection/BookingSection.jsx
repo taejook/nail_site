@@ -1,7 +1,13 @@
-// BookingSection.jsx
 import { useState, useEffect } from "react";
 import Calendar from "../Calendar";
 import BookingForm from "../BookingForm/BookingForm";
+import {
+  getLocations,
+  getTeamMembers,
+  getServices,
+  getBookings,
+  createBooking as createBookingApi,
+} from "../../../../utils/api";
 import "./BookingSection.css";
 
 export default function BookingSection() {
@@ -17,28 +23,26 @@ export default function BookingSection() {
   const [selectedTeamMember, setSelectedTeamMember] = useState("");
   const [selectedService, setSelectedService] = useState("");
 
-  // Fetch data from backend
   useEffect(() => {
     async function loadData() {
       try {
         const [locRes, teamRes, serviceRes, bookingRes] = await Promise.all([
-          fetch("http://localhost:3001/api/locations").then((r) => r.json()),
-          fetch("http://localhost:3001/api/team-members").then((r) => r.json()),
-          fetch("http://localhost:3001/api/services").then((r) => r.json()),
-          fetch("http://localhost:3001/api/bookings").then((r) => r.json()),
+          getLocations(),
+          getTeamMembers(),
+          getServices(),
+          getBookings(),
         ]);
-        setLocations(Array.isArray(locRes) ? locRes : []);
-        setTeamMembers(teamRes?.team_members || []);
-        setServices(serviceRes?.objects || []);
+
+        setLocations(locRes);
+        setTeamMembers(teamRes);
+        setServices(serviceRes);
         setEvents(
-          Array.isArray(bookingRes)
-            ? bookingRes.map((b) => ({
-                id: b.id,
-                title: b.customer?.display_name || "Booking",
-                start: b.start_at,
-                end: b.end_at,
-              }))
-            : []
+          bookingRes.map((b) => ({
+            id: b.id,
+            title: b.customer?.display_name || "Booking",
+            start: b.start_at,
+            end: b.end_at,
+          }))
         );
       } catch (err) {
         console.error("Failed to load data:", err);
@@ -53,10 +57,46 @@ export default function BookingSection() {
   };
 
   const createBooking = async () => {
-    if (!customerId || !selectedLocation || !selectedTeamMember || !selectedService) {
+    if (
+      !customerId ||
+      !selectedLocation ||
+      !selectedTeamMember ||
+      !selectedService
+    ) {
       return alert("Please fill all fields!");
     }
-    // payload here...
+
+    const payload = {
+      booking: {
+        customer_id: customerId,
+        location_id: selectedLocation,
+        start_at: selectedSlot.start,
+        end_at: selectedSlot.end,
+        appointment_segments: [
+          {
+            team_member_id: selectedTeamMember,
+            service_variation_id: selectedService,
+            service_variation_version: 1,
+          },
+        ],
+      },
+    };
+
+    const newBooking = await createBookingApi(payload);
+    if (newBooking?.id) {
+      setEvents((prev) => [
+        ...prev,
+        {
+          id: newBooking.id,
+          title: newBooking.customer?.display_name || "Booking",
+          start: newBooking.start_at,
+          end: newBooking.end_at,
+        },
+      ]);
+      setShowBookingForm(false);
+    } else {
+      alert("Failed to create booking");
+    }
   };
 
   return (

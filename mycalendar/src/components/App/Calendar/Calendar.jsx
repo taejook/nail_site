@@ -1,11 +1,37 @@
+// src/components/App/Calendar/Calendar.jsx
 import React, { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import BookingForm from "./BookingForm/BookingForm";
+import {
+  getLocations,
+  getTeamMembers,
+  getServices,
+  getBookings,
+  createBooking as createBookingApi,
+} from "../../../utils/api";
+import { useAuth } from "../../../context/AuthContext";
 import "./Calendar.css";
 
 export default function Calendar() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <div style={{ padding: 24, textAlign: "center" }}>Loading…</div>;
+  }
+  if (!user) {
+    return (
+      <div style={{ padding: 24, textAlign: "center" }}>
+        <h2>Please sign in to view and book appointments.</h2>
+      </div>
+    );
+  }
+
+  return <AuthedCalendar />;
+}
+
+function AuthedCalendar() {
   const [events, setEvents] = useState([]);
   const [locations, setLocations] = useState([]);
   const [teamMembers, setTeamMembers] = useState([]);
@@ -13,7 +39,9 @@ export default function Calendar() {
 
   const [showBookingForm, setShowBookingForm] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
-  const [customerId, setCustomerId] = useState("");
+  const [fullNameId, setFullNameId] = useState("");
+  const [emailId, setEmailId] = useState("");
+  const [phoneNumberId, setPhoneNumberId] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
   const [selectedTeamMember, setSelectedTeamMember] = useState("");
   const [selectedService, setSelectedService] = useState("");
@@ -21,54 +49,36 @@ export default function Calendar() {
   const [sidebarDay, setSidebarDay] = useState(new Date());
   const [availableSlots, setAvailableSlots] = useState([]);
 
-  // load backend data
+  // Load backend data once
   useEffect(() => {
-    async function loadData() {
+    (async () => {
       try {
         const [locRes, teamRes, serviceRes, bookingRes] = await Promise.all([
-          fetch("http://localhost:3001/api/locations").then((r) => r.json()),
-          fetch("http://localhost:3001/api/team-members").then((r) => r.json()),
-          fetch("http://localhost:3001/api/services").then((r) => r.json()),
-          fetch("http://localhost:3001/api/bookings").then((r) => r.json()),
+          getLocations(),
+          getTeamMembers(),
+          getServices(),
+          getBookings(),
         ]);
 
-        setLocations(Array.isArray(locRes) ? locRes : []);
-        setTeamMembers(
-          teamRes?.team_members || [
-            {
-              id: "test1",
-              team_member_details: { given_name: "Lucy", family_name: "Oh" },
-            },
-          ]
-        );
-        setServices(
-          serviceRes?.objects || [
-            { id: "srv1", item_data: { name: "Manicure" } },
-            { id: "srv2", item_data: { name: "Pedicure" } },
-            { id: "srv3", item_data: { name: "Nail Art" } },
-          ]
-        );
+        setLocations(locRes);
+        setTeamMembers(teamRes);
+        setServices(serviceRes);
         setEvents(
-          Array.isArray(bookingRes)
-            ? bookingRes.map((b) => ({
-                id: b.id,
-                title: b.customer?.display_name || "Booking",
-                start: b.start_at,
-                end: b.end_at,
-                team_member_id: b.team_member_id || null,
-              }))
-            : []
+          bookingRes.map((b) => ({
+            id: b.id,
+            title: b.customer?.display_name || "Booking",
+            start: b.start_at,
+            end: b.end_at,
+            team_member_id: b.team_member_id,
+          }))
         );
       } catch (err) {
         console.error("Failed to load data:", err);
-        alert("Error loading data — check console");
       }
-    }
-
-    loadData();
+    })();
   }, []);
 
-  // available slots sidebar (9–5)
+  // Compute 9–5 availability for selected day + staff
   useEffect(() => {
     if (!selectedTeamMember) {
       setAvailableSlots([]);
@@ -77,21 +87,19 @@ export default function Calendar() {
 
     const slots = [];
     for (let hour = 9; hour < 17; hour++) {
-      // Force slots to be in local time (no UTC shift)
       const start = new Date(sidebarDay);
       start.setHours(hour, 0, 0, 0);
       const end = new Date(sidebarDay);
       end.setHours(hour + 1, 0, 0, 0);
 
-      // Compare with events using getTime()
+      const startMs = start.getTime();
+      const endMs = end.getTime();
+
       const conflict = events.some((e) => {
-        const eventStart = new Date(e.start).getTime();
-        const eventEnd = new Date(e.end).getTime();
-        return (
-          e.team_member_id === selectedTeamMember &&
-          eventStart < end.getTime() &&
-          eventEnd > start.getTime()
-        );
+        if (e.team_member_id !== selectedTeamMember) return false;
+        const evStart = new Date(e.start).getTime();
+        const evEnd = new Date(e.end).getTime();
+        return evStart < endMs && evEnd > startMs;
       });
 
       slots.push({ start, end, conflict });
@@ -101,7 +109,9 @@ export default function Calendar() {
 
   const createBooking = async () => {
     if (
-      !customerId ||
+      !fullNameId ||
+      !emailId ||
+      !phoneNumberId ||
       !selectedLocation ||
       !selectedTeamMember ||
       !selectedService
@@ -111,7 +121,9 @@ export default function Calendar() {
 
     const payload = {
       booking: {
-        customer_id: customerId,
+        fullName_id: fullNameId,
+        email_id: emailId,
+        phoneNumber_id: phoneNumberId,
         location_id: selectedLocation,
         start_at: selectedSlot.start,
         end_at: selectedSlot.end,
@@ -125,49 +137,38 @@ export default function Calendar() {
       },
     };
 
-    try {
-      const res = await fetch("http://localhost:4000/api/bookings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+    const data = await createBookingApi(payload);
 
-      if (res.status === 409) return alert("This time slot is already booked.");
-
-      const data = await res.json();
-      if (data.id) {
-        setEvents((prev) => [
-          ...prev,
-          {
-            id: data.id,
-            title: data.customer?.display_name || "Booking",
-            start: data.start_at,
-            end: data.end_at,
-            team_member_id: selectedTeamMember,
-          },
-        ]);
-        setShowBookingForm(false);
-        setCustomerId("");
-        setSelectedSlot(null);
-        alert("Booking created ✅");
-      } else {
-        alert("Failed to create booking — check console");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Error creating booking — check console");
+    if (data?.id) {
+      setEvents((prev) => [
+        ...prev,
+        {
+          id: data.id,
+          title: data.customer?.display_name || "Booking",
+          start: data.start_at,
+          end: data.end_at,
+          team_member_id: selectedTeamMember,
+        },
+      ]);
+      setShowBookingForm(false);
+      setFullNameId("");
+      setEmailId("");
+      setPhoneNumberId("");
+      setSelectedSlot(null);
+      alert("Booking created!");
+    } else {
+      alert("Failed to create booking");
     }
   };
 
   return (
     <div className="calendar-container">
-      {/* Sidebar on the left */}
       <div className="calendar-left">
         <div className="calendar-sidebar">
           <h3>📅 Select Date & Time</h3>
           <p>Choose your staff, service, location, and a time slot.</p>
 
-          {/* Staff Selector */}
+          {/* Staff */}
           <div className="form-group">
             <label>Staff:</label>
             <select
@@ -183,7 +184,7 @@ export default function Calendar() {
             </select>
           </div>
 
-          {/* Location Selector */}
+          {/* Location */}
           <div className="form-group">
             <label>Location:</label>
             <select
@@ -206,18 +207,14 @@ export default function Calendar() {
               initialView="dayGridMonth"
               selectable={true}
               select={(info) => setSidebarDay(new Date(info.startStr))}
-              headerToolbar={{
-                left: "prev",
-                center: "title",
-                right: "next",
-              }}
+              headerToolbar={{ left: "prev", center: "title", right: "next" }}
               height="auto"
               dayMaxEvents={true}
-              events={events} // ✅ show bookings on mini calendar
+              events={events}
             />
           </div>
 
-          {/* Time Slots */}
+          {/* Time slots */}
           <div className="time-slots">
             {!selectedTeamMember ? (
               <p style={{ color: "#888", fontStyle: "italic" }}>
@@ -226,7 +223,6 @@ export default function Calendar() {
             ) : (
               availableSlots.map((slot) => {
                 const isBooked = slot.conflict;
-
                 return (
                   <button
                     key={slot.start.toISOString()}
@@ -258,7 +254,7 @@ export default function Calendar() {
               })
             )}
           </div>
-          {/* Legend */}
+
           <div className="legend">
             <span className="dot available"></span> Available
             <span className="dot unavailable"></span> Unavailable
@@ -266,12 +262,15 @@ export default function Calendar() {
         </div>
       </div>
 
-      {/* Booking form on the right */}
       <div className="calendar-right">
         {showBookingForm && (
           <BookingForm
-            customerId={customerId}
-            setCustomerId={setCustomerId}
+            fullNameId={fullNameId}
+            setFullNameId={setFullNameId}
+            emailId={emailId}
+            setEmailId={setEmailId}
+            phoneNumberId={phoneNumberId}
+            setPhoneNumberId={setPhoneNumberId}
             selectedLocation={selectedLocation}
             setSelectedLocation={setSelectedLocation}
             selectedService={selectedService}
