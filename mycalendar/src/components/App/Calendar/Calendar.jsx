@@ -1,4 +1,3 @@
-// src/components/App/Calendar/Calendar.jsx
 import React, { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";

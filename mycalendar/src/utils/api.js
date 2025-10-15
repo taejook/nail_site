@@ -1,7 +1,10 @@
-const API_BASE = "http://localhost:3001/api"; 
-// =====================
+const API_BASE =
+  process.env.NODE_ENV === "production"
+    ? "https://api.lucynailedit.twilightparadox.com" 
+    : "http://localhost:3001/api";
+
 // Token management
-// =====================
+
 
 let token = null;
 
@@ -66,9 +69,9 @@ export async function getMe() {
   return fetchData("auth/me", { method: "GET" });
 }
 
-// =====================
+
 // Locations / Team / Services
-// =====================
+
 export async function getLocations() {
   const data = await fetchData("locations");
   return Array.isArray(data) ? data : [];
@@ -84,9 +87,9 @@ export async function getServices() {
   return Array.isArray(data) ? data : [];
 }
 
-// =====================
+
 // Bookings
-// =====================
+
 export async function getBookings() {
   const data = await fetchData("bookings");
   return Array.isArray(data) ? data : [];
