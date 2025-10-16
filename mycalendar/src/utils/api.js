@@ -1,6 +1,6 @@
 const API_BASE =
   process.env.NODE_ENV === "production"
-    ? "https://api.lucynailedit.twilightparadox.com" 
+    ? "https://api.lucynailedit.twilightparadox.com/api" 
     : "http://localhost:3001/api";
 
 // Token management

@@ -1,6 +1,6 @@
-/* Services Section */
+
 .services {
-  background: #fdeef5; /* matches the appointment section bg */
+  background: #fdeef5;
   text-align: center;
   padding: 4rem 2rem;
   font-family: "Poppins", sans-serif;
@@ -19,7 +19,6 @@
   margin-bottom: 2rem;
 }
 
-/* Image */
 .services img {
   max-width: 900px;
   width: 100%;
@@ -28,4 +27,23 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   display: block;
   margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .services {
+    padding: 2rem 1rem;
+  }
+
+  .services h1 {
+    font-size: 1.6rem;
+  }
+
+  .services img {
+    max-width: 100%;
+    border-radius: 12px;
+  }
+
+  .services p {
+    font-size: 0.9rem;
+  }
 }

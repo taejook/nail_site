@@ -1,3 +1,8 @@
+.booking-form,
+.booking-form * {
+  box-sizing: border-box;
+}
+
 .booking-form {
   max-width: 420px;
   margin: 2rem auto;
@@ -6,18 +11,12 @@
   border-radius: 16px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
   font-family: "Poppins", sans-serif;
-}
-
-.booking-form h3 {
-  font-size: 1.4rem;
-  font-weight: 600;
-  /* margin-bottom: 1.5rem; */
-  text-align: center;
-  color: #e91e63;
+  width: 100%;
 }
 
 .form-group {
   margin-bottom: 1.2rem;
+  width: 100%;
 }
 
 .form-group label {
@@ -25,12 +24,16 @@
   margin-bottom: 0.4rem;
   font-weight: 500;
   color: #444;
+  width: 100%;
+  white-space: normal;
+  word-break: break-word; 
+  text-align: left;
 }
 
 .booking-form input,
 .booking-form select {
-  background-color: white;
   width: 100%;
+  max-width: 100%;
   padding: 0.9rem;
   border: 1px solid #ddd;
   border-style: none none solid none;
@@ -53,10 +56,9 @@
   gap: 1rem;
 }
 
-.primary-btn {
+.primary-btn,
+.secondary-btn {
   flex: 1;
-  background: #e91e63;
-  color: #fff;
   border: none;
   padding: 0.9rem 1.4rem;
   border-radius: 12px;
@@ -66,13 +68,9 @@
   transition: background 0.3s ease;
 }
 
-.primary-btn:disabled {
-  background: #838282;
-  cursor: not-allowed;
-}
-.primary-btn:disabled:hover {
-  background: #838282;
-  cursor: not-allowed;
+.primary-btn {
+  background: #e91e63;
+  color: #fff;
 }
 
 .primary-btn:hover {
@@ -80,18 +78,51 @@
 }
 
 .secondary-btn {
-  flex: 1;
   background: #f1f1f1;
   color: #333;
-  border: none;
-  padding: 0.9rem 1.4rem;
-  border-radius: 12px;
-  font-weight: 500;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.3s ease;
 }
 
 .secondary-btn:hover {
   background: #ddd;
+}
+
+@media (max-width: 768px) {
+  .booking-form {
+    width: 90%;
+    padding: 1.5rem;
+  }
+
+  .form-group label {
+    font-size: 0.95rem;
+  }
+
+  .booking-form input,
+  .booking-form select {
+    font-size: 0.95rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .booking-form {
+    width: 95%;
+    padding: 1rem;
+  }
+
+  .form-group label {
+    font-size: 0.9rem;
+  }
+
+  .booking-form input,
+  .booking-form select {
+    font-size: 0.9rem;
+  }
 }

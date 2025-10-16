@@ -115,3 +115,76 @@
 .legend .unavailable {
   background: #9e9e9e;
 }
+
+@media (max-width: 768px) {
+  .calendar-container {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 1.2rem;
+    padding: 1rem;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .calendar-left,
+  .calendar-right {
+    flex: 1 1 100%;
+    max-width: 95%;
+    margin: 0 auto;
+  }
+
+  .calendar-sidebar {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.8rem;
+    margin: 0 auto;
+    transform: scale(0.93);
+    transform-origin: top center;
+  }
+
+  .mini-calendar {
+    margin: 0 auto;
+    font-size: 0.7rem;
+  }
+
+  .time-slots {
+    justify-content: center;
+  }
+
+  .time-slot-btn {
+    flex: 1 1 100%;
+    max-width: 90%;
+    margin: 0 auto;
+    font-size: 0.85rem;
+    padding: 0.6rem;
+  }
+
+  .legend {
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .calendar-container {
+    padding: 0.5rem;
+    gap: 0.8rem;
+  }
+
+  .calendar-sidebar {
+    transform: scale(0.9);
+  }
+
+  .mini-calendar {
+    font-size: 0.65rem;
+  }
+
+  .time-slot-btn {
+    font-size: 0.8rem;
+    padding: 0.5rem;
+  }
+}
+

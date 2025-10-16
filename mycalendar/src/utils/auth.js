@@ -1,3 +1,4 @@
+
 let token = null;
 
 export function setAuthToken(newToken) {

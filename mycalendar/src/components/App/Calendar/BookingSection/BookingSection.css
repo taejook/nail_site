@@ -5,3 +5,19 @@
   gap: 2rem;
   align-items: flex-start;
 }
+
+@media (max-width: 768px) {
+  .booking-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem; 
+    padding: 1rem; 
+  }
+}
+
+@media (max-width: 480px) {
+  .booking-content {
+    gap: 1rem;
+    padding: 0.8rem;
+  }
+}
