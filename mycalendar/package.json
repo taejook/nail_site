@@ -22,7 +22,7 @@
   "homepage": "https://lucynailedit.twilightparadox.com",
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && scp -r ./build/* taejook1107@lucynailedit.twilightparadox.com:/home/taejook1107/mycalendar",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
