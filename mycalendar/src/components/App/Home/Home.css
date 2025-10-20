@@ -1,0 +1,51 @@
+/* width math is predictable everywhere */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* remove default body margins */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+/* media that can’t overflow the viewport */
+img,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.app {
+  display: flex; flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem;     /* safe side padding that won't overflow */
+}
+
+/* optional inner wrapper if you use it */
+.page-container {
+  width: 100%;
+  max-width: 1200px;   /* keeps things tidy on large screens */
+  margin: 0 auto;
+}
+
+/* calendar won’t exceed container */
+#calendar { width: 100%; max-width: 100%; }
+
+/* about section: keep padding but don’t exceed viewport */
+.about { width: 100%; margin: 0 auto; padding: 2rem 1rem; }
+
+/* ✅ Slight refinement for larger screens */
+@media (min-width: 768px) {
+  .page-container {
+    width: 90%; /* slightly indented but not narrow */
+    max-width: 1200px; /* stops growing beyond this */
+  }
+}

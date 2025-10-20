@@ -3,7 +3,7 @@ import "./Gallery.css";
 console.log(nails)
 export default function Gallery() {
   return (
-    <div className="App">
+    <div className="app">
       <div className="gallery" id="gallery">
         <h1>Gallery</h1>
         <p>Check out some of our nail designs and services.</p>

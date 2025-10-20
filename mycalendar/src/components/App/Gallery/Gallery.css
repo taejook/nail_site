@@ -1,6 +1,6 @@
 .gallery {
-  text-align: center;
-  padding: 2rem;
+  padding: 1.5rem 1rem;
+  width: 100%;
   margin: 0 auto;
   max-width: 1200px;
 }
@@ -15,7 +15,7 @@
 .gallery-card {
   background: #fff;
   border-radius: 12px;
-  
+
   padding: 1rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s;
@@ -73,4 +73,3 @@
     height: 140px;
   }
 }
-
