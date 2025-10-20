@@ -6,6 +6,7 @@
   align-items: center;
   padding: 1rem 2rem;
   width: 100%;
+  max-width: 100%;
   background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
@@ -169,24 +170,34 @@
 }
 
 @media (max-width: 480px) {
+  .nav {
+    padding: 0.5rem 0.75rem;
+  } /* smaller padding */
   .nav-bar {
-    gap: 0.6rem;
+    display: flex;
+    flex-direction: column; /* stack logo + links */
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .nav .logo {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
+  } /* smaller logo on 320px */
+
+  .nav-links,
+  .nav-btn,
+  .btn-wrapper {
+    display: flex;
+    flex-wrap: wrap; /* ✅ wrap instead of overflow */
+    gap: 0.75rem;
+    justify-content: center;
+    max-width: 100%;
   }
 
-  .nav-row {
-    gap: 0.6rem;
-  }
-
-  .nav-links {
-    gap: 0.8rem;
-  }
-
-  .nav-user,
-  .logout {
-    gap: 0.4rem;
+  /* Links can wrap; don’t force one long line */
+  .nav-links a,
+  .nav-btn .nav-btn,
+  .nav-btn a {
+    white-space: normal;
   }
 }

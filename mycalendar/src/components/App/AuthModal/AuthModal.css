@@ -6,6 +6,7 @@
 }
 
 .modal-card {
+  position: relative;
   width: 100%;
   max-width: 440px;
   background: #fff;
@@ -71,4 +72,23 @@
   padding: 8px 10px;
   border-radius: 10px;
   font-size: .9rem;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 26px;
+  font-weight: 600;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.2s ease;
+  z-index: 10;
+}
+
+.modal-close-btn:hover {
+  color: #e91e63;
 }

@@ -9,7 +9,6 @@ import Services from "../src/components/App/Services/Services";
 import Gallery from "../src/components/App/Gallery/Gallery";
 import Calendar from "../src/components/App/Calendar/Calendar";
 import About from "../src/components/App/About/About";
-
 import AuthModal from "../src/components/App/AuthModal/AuthModal"
 
 export default function App() {

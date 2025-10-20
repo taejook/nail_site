@@ -1,16 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useModal } from "../../../context/ModalContext";
 import { useAuth } from "../../../context/AuthContext";
 import "./AuthModal.css";
 
 export default function AuthModal() {
   const { authModal, closeAuthModal } = useModal();
-  if (!authModal.open) return null;
+  const isOpen = authModal.open;
   const initialTab = authModal.mode === "register" ? "register" : "login";
+
+  // ✅ Hook always runs — only active when modal is open
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleEsc = (e) => {
+      if (e.key === "Escape") closeAuthModal();
+    };
+    document.addEventListener("keydown", handleEsc);
+    return () => document.removeEventListener("keydown", handleEsc);
+  }, [isOpen, closeAuthModal]);
+
+  // ✅ Conditional rendering happens after all hooks
+  if (!isOpen) return null;
 
   return (
     <div className="modal-backdrop" onClick={closeAuthModal}>
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+        <button
+          className="modal-close-btn"
+          aria-label="Close modal"
+          onClick={closeAuthModal}
+        >
+          &times;
+        </button>
+
         <AuthTabs initialTab={initialTab} onClose={closeAuthModal} />
       </div>
     </div>
@@ -53,7 +74,8 @@ function LoginForm({ onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
 
-  const onChange = (e) => setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
+  const onChange = (e) =>
+    setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -62,28 +84,51 @@ function LoginForm({ onSuccess }) {
     const result = await login(form);
     setLoading(false);
     if (result?.error) return setErr(result.error);
-    onSuccess?.(); // close modal
+    onSuccess?.();
   };
 
   return (
     <form onSubmit={onSubmit} className="auth-form">
       <label>Email</label>
-      <input name="email" type="email" value={form.email} onChange={onChange} required />
+      <input
+        name="email"
+        type="email"
+        value={form.email}
+        onChange={onChange}
+        required
+      />
+
       <label>Password</label>
-      <input name="password" type="password" value={form.password} onChange={onChange} required />
+      <input
+        name="password"
+        type="password"
+        value={form.password}
+        onChange={onChange}
+        required
+      />
+
       {err && <div className="auth-error">{err}</div>}
-      <button type="submit" disabled={loading}>{loading ? "Signing in..." : "Sign in"}</button>
+
+      <button type="submit" disabled={loading}>
+        {loading ? "Signing in..." : "Sign in"}
+      </button>
     </form>
   );
 }
 
 function RegisterForm({ onSuccess }) {
   const { register } = useAuth();
-  const [form, setForm] = useState({ fullName: "", email: "", password: "" });
+  const [form, setForm] = useState({
+    fullName: "",
+    email: "",
+    phoneNumber: "",
+    password: "",
+  });
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
 
-  const onChange = (e) => setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
+  const onChange = (e) =>
+    setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -98,15 +143,45 @@ function RegisterForm({ onSuccess }) {
   return (
     <form onSubmit={onSubmit} className="auth-form">
       <label>Full name</label>
-      <input name="fullName" value={form.fullName} onChange={onChange} required />
+      <input
+        name="fullName"
+        value={form.fullName}
+        onChange={onChange}
+        required
+      />
+
       <label>Email</label>
-      <input name="email" type="email" value={form.email} onChange={onChange} required />
+      <input
+        name="email"
+        type="email"
+        value={form.email}
+        onChange={onChange}
+        required
+      />
+
       <label>Phone Number</label>
-      <input name="phoneNumber" type="text" value={form.phoneNumber} onChange={onChange} required />
+      <input
+        name="phoneNumber"
+        type="text"
+        value={form.phoneNumber}
+        onChange={onChange}
+        required
+      />
+
       <label>Password</label>
-      <input name="password" type="password" value={form.password} onChange={onChange} required />
+      <input
+        name="password"
+        type="password"
+        value={form.password}
+        onChange={onChange}
+        required
+      />
+
       {err && <div className="auth-error">{err}</div>}
-      <button type="submit" disabled={loading}>{loading ? "Creating..." : "Create account"}</button>
+
+      <button type="submit" disabled={loading}>
+        {loading ? "Creating..." : "Create account"}
+      </button>
     </form>
   );
 }

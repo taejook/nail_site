@@ -14,7 +14,7 @@ export default function Nav() {
     <nav className="nav">
       <section className="nav-bar">
         <Link to="/">
-          <div className="logo">Lucy Nailed It</div>
+          <header className="logo">Lucy Nailed It</header>
         </Link>
 
         <ul className="nav-links">

@@ -41,6 +41,7 @@ export default function BookingForm({
           value={autofullName}
           onChange={(e) => setFullNameId(e.target.value)}
           readOnly={readOnly}
+          placeholder={readOnly && !user?.email ? "Enter full name" : ""}
         />
       </div>
 
@@ -51,6 +52,7 @@ export default function BookingForm({
           value={autoEmail}
           onChange={(e) => setEmailId(e.target.value)}
           readOnly={readOnly}
+          placeholder={readOnly && !user?.email ? "Enter email" : ""}
         />
       </div>
 

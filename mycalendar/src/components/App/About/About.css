@@ -18,3 +18,20 @@
   color: #555;
   line-height: 1.6;
 }
+
+@media (max-width: 480px) {
+  .about {
+    padding: 1.5rem 0.75rem;  /* less vertical & side padding */
+    box-shadow: none;         /* cleaner look on mobile */
+  }
+
+  .about h2 {
+    font-size: 1.4rem;        /* smaller heading */
+    margin-bottom: 0.75rem;
+  }
+
+  .about p {
+    font-size: 0.95rem;       /* readable but not oversized */
+    line-height: 1.5;
+  }
+}
